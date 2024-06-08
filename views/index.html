@@ -4,11 +4,14 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/static/css/build.css" />
+    <script src="/static/js/htmx.min.js"></script>
     <title>Document</title>
   </head>
-  <body>
-    <h1>Hello world</h1>
-    <p>Data from server: {{.Payload}}</p>
+  <body hx-boost="true">
+    {{template "header" .}}
+    <h1 class="text-red-600 font-semibold">Welcome</h1>
+    Message from server : {{.Payload}}
   </body>
 </html>
 {{end}}
