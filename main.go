@@ -2,7 +2,6 @@ package main
 
 import (
 	"log"
-	"net/http"
 )
 
 type Page struct {
@@ -10,15 +9,8 @@ type Page struct {
 }
 
 func main() {
-	s := newServer(":3000", "static")
-
-	s.RegisterHandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		data := Page{
-			Payload: "hello world",
-		}
-		respondTempl(w, 200, "index", data)
-	})
-
+	s := newServer(":4000", "static")
+	s.RegisterHandler("/", handleV1Route())
 	log.Printf("serving @ http://loclahost:%s\n", s.ListenAddr)
 	log.Fatal(s.Listen())
 }

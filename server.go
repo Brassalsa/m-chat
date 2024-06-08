@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"net/http"
 	"strings"
 )
@@ -49,6 +48,6 @@ func formatDir(dir string) string {
 	if dir[len(dir)-1] != '/' {
 		str = append(str, "/")
 	}
-	log.Println(strings.Join(str, ""))
+
 	return strings.Join(str, "")
 }
