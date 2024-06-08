@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"io"
 	"log"
 	"net/http"
 )
@@ -16,9 +17,8 @@ func respondTempl(w http.ResponseWriter, code int, name string, payload interfac
 	}
 }
 
-func respondBytes(w http.ResponseWriter, code int, name string, payload interface{}) {
+func respondBytes(w io.Writer, name string, payload interface{}) {
 	buf := new(bytes.Buffer)
-	w.WriteHeader(code)
 
 	if err := templ.Render(buf, name, payload); err != nil {
 		log.Printf("error rendering %s template, %s\n", name, err)
