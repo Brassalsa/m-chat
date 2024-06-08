@@ -1,8 +1,10 @@
 {{ block "header" .}}
-<header class="flex gap-2 justify-between items-center w-full">
+<header class="flex gap-2 justify-between items-center w-full py-2">
   <h1 class="text-3xl">M-Chat</h1>
   <nav>
-    <button>Sign-in</button>
+    <a href="/sign-in">
+      <button>Sign-in</button>
+    </a>
   </nav>
 </header>
 {{ end }}
