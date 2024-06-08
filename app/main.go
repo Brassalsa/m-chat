@@ -9,8 +9,8 @@ type Page struct {
 }
 
 func main() {
-	s := newServer(":4000", "static")
+	s := newServer(":3000", "static")
 	s.RegisterHandler("/", handleV1Route())
-	log.Printf("serving @ http://loclahost:%s\n", s.ListenAddr)
+	log.Printf("serving @ http://localhost:%s\n", s.ListenAddr)
 	log.Fatal(s.Listen())
 }
