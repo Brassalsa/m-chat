@@ -4,10 +4,22 @@
 
 @layer components {
   body {
-    @apply px-2;
+    @apply px-2 bg-slate-200;
+  }
+
+  input {
+    @apply border border-black rounded-md px-2 py-1;
   }
 
   button {
     @apply px-2 py-1 border rounded-md bg-blue-500 text-white hover:bg-blue-400 transition;
+  }
+
+  a {
+    @apply text-blue-500 hover:underline hover:text-blue-400 transition hover:cursor-pointer;
+  }
+
+  .card {
+    @apply bg-slate-50 px-6 py-4 rounded-md;
   }
 }
