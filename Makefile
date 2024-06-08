@@ -1,5 +1,5 @@
 build:
-	go build -o bin/m-chat
+	go build -o bin/m-chat ./app
 
 run:build
 	./bin/m-chat
