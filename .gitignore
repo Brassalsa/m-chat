@@ -3,3 +3,6 @@ bin/
 
 # temp build created by air
 tmp/
+
+# ignore css build
+static/css/build.css
