@@ -1,5 +1,5 @@
 build:
-	go build -o bin/m-chat ./app
+	go build -o bin/m-chat ./cmd/main.go
 
 run:build
 	./bin/m-chat
@@ -9,10 +9,10 @@ dev-run:
 	air
 
 css-build: 
-	npx tailwindcss -i ./static/css/dev.css -o ./static/css/build.css
+	npx tailwindcss -i ./web/static/css/dev.css -o ./web/static/css/build.css
 	
 css-dev: 
-	npx tailwindcss -i ./static/css/dev.css -o ./static/css/build.css --watch
+	npx tailwindcss -i ./web/static/css/dev.css -o ./web/static/css/build.css --watch
 
 dev:
 	make -j dev-run css-dev

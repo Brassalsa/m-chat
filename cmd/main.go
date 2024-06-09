@@ -2,6 +2,9 @@ package main
 
 import (
 	"log"
+
+	"github.com/Brassalsa/m-chat/internal/api"
+	"github.com/Brassalsa/m-chat/pkg"
 )
 
 type Page struct {
@@ -9,8 +12,8 @@ type Page struct {
 }
 
 func main() {
-	s := newServer(":3000", "static")
-	s.RegisterHandler("/", handleV1Route())
+	s := pkg.NewServer(":3000", "web/static")
+	s.RegisterHandler("/", api.HandleV1Route())
 	log.Printf("serving @ http://localhost:%s\n", s.ListenAddr)
 	log.Fatal(s.Listen())
 }

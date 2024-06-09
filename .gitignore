@@ -5,4 +5,4 @@ bin/
 tmp/
 
 # ignore css build
-static/css/build.css
+web/static/css/build.css

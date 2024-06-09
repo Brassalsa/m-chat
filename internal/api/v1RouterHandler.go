@@ -3,7 +3,7 @@ package api
 import (
 	"net/http"
 
-	"github.com/Brassalsa/m-chat/api/handlers"
+	"github.com/Brassalsa/m-chat/internal/api/handlers"
 	"github.com/Brassalsa/m-chat/pkg"
 )
 

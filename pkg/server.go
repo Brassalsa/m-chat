@@ -1,4 +1,4 @@
-package main
+package pkg
 
 import (
 	"net/http"
@@ -11,7 +11,7 @@ type Server struct {
 	RMux       *http.ServeMux
 }
 
-func newServer(listenAddr, staticDir string) *Server {
+func NewServer(listenAddr, staticDir string) *Server {
 	return &Server{
 		ListenAddr: listenAddr,
 		StaticDir:  staticDir,

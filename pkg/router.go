@@ -1,4 +1,4 @@
-package main
+package pkg
 
 import "net/http"
 
@@ -6,7 +6,7 @@ type Router struct {
 	RMux *http.ServeMux
 }
 
-func newRouter() *Router {
+func NewRouter() *Router {
 	return &Router{
 		RMux: http.NewServeMux(),
 	}
