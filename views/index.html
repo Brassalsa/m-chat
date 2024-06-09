@@ -1,17 +1,4 @@
 {{block "index" .}}
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="/static/css/build.css" />
-    <script src="/static/js/htmx.min.js"></script>
-    <title>M-Chat</title>
-  </head>
-  <body hx-boost="true">
-    {{template "header" .}}
-    <h1 class="text-red-400 font-semibold">Welcome</h1>
-    Message from server : {{.Payload}}
-  </body>
-</html>
+<h1>Welcome</h1>
+<p>From Server: {{.Payload}}</p>
 {{end}}
