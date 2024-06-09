@@ -1,0 +1,26 @@
+{{block "sign-in" .}}
+<div
+  id="sign-in"
+  class="max-w-fit mx-auto flex flex-col gap-4 card justify-center items-center"
+>
+  <h1 class="text-center text-2xl">Sign in</h1>
+  <form
+    class="grid gap-3"
+    hx-post="/sign-in"
+    hx-swap="outerHTML"
+    hx-target="#sign-in"
+  >
+    <label for="email">Email</label>
+    <input id="email" name="email" type="email" autocomplete="email" required />
+    <label for="password">Password</label>
+    <input
+      id="password"
+      name="password"
+      type="password"
+      required
+      autocomplete="current-password"
+    />
+    <button>Login</button>
+  </form>
+</div>
+{{end}}
