@@ -6,3 +6,7 @@ tmp/
 
 # ignore css build
 web/static/css/build.css
+
+.env
+
+vendor/
