@@ -4,6 +4,9 @@ build:
 run:build
 	./bin/m-chat
 
+test: 
+	go test ./... -v
+
 # install air first the run dev cmd
 dev-run: 
 	air
