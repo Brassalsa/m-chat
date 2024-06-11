@@ -1,9 +1,11 @@
 package api
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/Brassalsa/m-chat/internal/api/handlers"
+	"github.com/Brassalsa/m-chat/internal/db"
 	"github.com/Brassalsa/m-chat/pkg"
 )
 
@@ -11,7 +13,7 @@ type Data struct {
 	Payload string
 }
 
-func HandleV1Route() http.Handler {
+func HandleV1Route(ctx context.Context, dbC *db.MongoDb) http.Handler {
 	r := pkg.NewRouter()
 	layout := "layout"
 	r.RegisterHandleFunc("GET /", func(w http.ResponseWriter, r *http.Request) {
