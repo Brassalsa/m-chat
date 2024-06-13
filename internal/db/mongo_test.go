@@ -45,39 +45,27 @@ func TestMongoDb(t *testing.T) {
 	}
 
 	t.Log("Testing put")
-	if _, err := db.InsertTo("tests", tstD); err != nil {
+	if err := db.InsertTo("tests", tstD); err != nil {
 		t.Error(err)
 	}
 
 	t.Log("Testing get")
-	res, err := db.FindOne("tests", tstD)
+	tstR := new(TestData)
+	err := db.FindOne("tests", tstD, &tstR)
 	if err != nil {
 		t.Error(err)
 	} else {
-		tstR := new(TestData)
-		if err := res.Decode(&tstR); err != nil {
-			t.Error(err)
-		} else if tstR.Name != tstD.Name {
+		if tstR.Name != tstD.Name {
 			t.Errorf("have %s want %s", tstR.Name, tstD.Name)
 		}
-	}
-
-	t.Log("Testing decoding ")
-	tstN := new(TestData)
-	if err := db.DecodeTo(res, &tstN); err != nil {
-		t.Error("decoding err ", err)
-	} else if tstN.Name != tstD.Name {
-		t.Errorf("have %s want %s", tstN.Name, tstD.Name)
 	}
 
 	t.Log("Testing update")
 	tstU := TestData{
 		Name: "test 2",
 	}
-	if res, err := db.Update("tests", tstD, tstU); err != nil {
+	if err := db.Update("tests", tstD, tstU); err != nil {
 		t.Error(err)
-	} else if res.ModifiedCount == 0 {
-		t.Error("data not updated")
 	}
 
 	t.Log("Testing deletion")
