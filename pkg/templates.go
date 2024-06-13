@@ -14,8 +14,15 @@ type LayoutPage struct {
 }
 
 func NewTemplate() *Templates {
+	templ, err := template.ParseGlob("*web/views/*.html")
+	if err != nil {
+		templ, err = template.ParseGlob("../web/views/*.html")
+		if err != nil {
+			panic(err)
+		}
+	}
 	return &Templates{
-		templates: template.Must(template.ParseGlob("*web/views/*.html")),
+		templates: templ,
 	}
 }
 
