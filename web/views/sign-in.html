@@ -1,26 +1,135 @@
 {{block "sign-in" .}}
 <div
-  id="sign-in"
+  id="sign-in-page"
   class="max-w-fit mx-auto flex flex-col gap-4 card justify-center items-center"
 >
   <h1 class="text-center text-2xl">Sign in</h1>
-  <form
-    class="grid gap-3"
-    hx-post="/sign-in"
-    hx-swap="outerHTML"
-    hx-target="#sign-in"
-  >
-    <label for="email">Email</label>
-    <input id="email" name="email" type="email" autocomplete="email" required />
-    <label for="password">Password</label>
-    <input
-      id="password"
-      name="password"
-      type="password"
-      required
-      autocomplete="current-password"
-    />
-    <button>Login</button>
-  </form>
+  <div id="sign-in">
+    {{if eq .Values.templ "log-in"}} {{template "log-in" .}} {{end}} {{if eq
+    .Values.templ "register"}} {{template "register" .}} {{end}}
+  </div>
 </div>
+{{end}} {{block "log-in" .}}
+<form class="grid gap-3" hx-post="/log-in" hx-target="#sign-in">
+  <label for="email">Email</label>
+  <input
+    id="email"
+    name="email"
+    type="email"
+    autocomplete="email"
+    required
+    {{if
+    .Values.email}}
+    value="{{.Values.email}}"
+    {{end}}
+  />
+  <p class="text-red-500 capitalize">
+    {{if .Errors.email}} {{.Errors.email}} {{end}}
+  </p>
+  <label for="password">Password</label>
+  <input
+    id="password"
+    name="password"
+    type="password"
+    required
+    autocomplete="current-password"
+    {{if
+    .Values.password}}
+    value="{{.Values.password}}"
+    {{end}}
+  />
+  <p class="text-red-500 capitalize">
+    {{if .Errors.password}} {{.Errors.password}} {{end}}
+  </p>
+  <p class="text-red-500 capitalize">
+    {{if .Errors.form}} {{.Errors.form}} {{end}}
+  </p>
+  <button>Login</button>
+
+  <a href="/sign-in?register=1" hx-target="body" class="mx-auto"
+    >Register here</a
+  >
+</form>
+{{end}} {{block "register" .}}
+<form class="grid gap-3" hx-post="/register" hx-target="#sign-in">
+  <label for="name">Name</label>
+  <input
+    id="name"
+    name="name"
+    type="name"
+    autocomplete="name"
+    required
+    {{if
+    .Values.name}}
+    value="{{.Values.name}}"
+    {{end}}
+  />
+  <p class="text-red-500 capitalize">
+    {{if .Errors.name}} {{.Errors.name}} {{end}}
+  </p>
+  <label for="username">Username</label>
+  <input
+    id="username"
+    name="username"
+    autocomplete="username"
+    required
+    {{if
+    .Values.username}}
+    value="{{.Values.username}}"
+    {{end}}
+  />
+  <p class="text-red-500 capitalize">
+    {{if .Errors.username}} {{.Errors.username}} {{end}}
+  </p>
+  <label for="email">Email</label>
+  <input
+    id="email"
+    name="email"
+    type="email"
+    autocomplete="email"
+    required
+    {{if
+    .Values.email}}
+    value="{{.Values.email}}"
+    {{end}}
+  />
+  <p class="text-red-500 capitalize">
+    {{if .Errors.email}} {{.Errors.email}} {{end}}
+  </p>
+  <label for="password">Password</label>
+  <input
+    id="password"
+    name="password"
+    type="password"
+    required
+    autocomplete="current-password"
+    {{if
+    .Values.password}}
+    value="{{.Values.password}}"
+    {{end}}
+  />
+  <p class="text-red-500 capitalize">
+    {{if .Errors.password}} {{.Errors.password}} {{end}}
+  </p>
+  <label for="confirm_password">Confirm password</label>
+  <input
+    id="confirm_password"
+    name="confirm_password"
+    type="password"
+    required
+    autocomplete="current-password"
+    {{if
+    .Values.confirm_password}}
+    value="{{.Values.confirm_password}}"
+    {{end}}
+  />
+  <p class="text-red-500 capitalize">
+    {{if .Errors.confirm_password}} {{.Errors.confirm_password}} {{end}}
+  </p>
+  <p class="text-red-500 capitalize">
+    {{if .Errors.form}} {{.Errors.form}} {{end}}
+  </p>
+  <button>Register</button>
+  <a hx-target="body" href="/sign-in?register=0" class="mx-auto">Login here</a>
+</form>
 {{end}}
