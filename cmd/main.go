@@ -25,7 +25,6 @@ func main() {
 	}
 
 	s := pkg.NewServer(":3000", "web/static")
-
 	// connect to db
 	ctx := context.Background()
 	dbC := db.NewMongoDb(dbUrl, dbName)
