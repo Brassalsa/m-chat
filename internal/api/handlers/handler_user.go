@@ -50,7 +50,13 @@ func (u *UserHandler) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// TODO: header tokens, etc
+	if err := helpers.GenerateAndSetTokens(w,
+		types.Id{
+			Id: user.Id,
+		}); err != nil {
+		formData.Errors["form"] = "error generating token"
+	}
+
 }
 
 type RegisterUser struct {
@@ -124,11 +130,23 @@ func (u *UserHandler) Regsiter(w http.ResponseWriter, r *http.Request) {
 		Name:     name,
 		Password: password,
 	}); err != nil {
-
 		formData.Errors["form"] = err.Error()
 		return
 	}
 
-	// TODO: header tokens, etc
+	// find inserted user
+	if err := u.Db.FindOne(u.Coll, types.Email{
+		Email: email,
+	}, &user); err != nil {
+		formData.Errors["form"] = err.Error()
+		return
+	}
+
+	if err := helpers.GenerateAndSetTokens(w,
+		types.Id{
+			Id: user.Id,
+		}); err != nil {
+		formData.Errors["form"] = "error generating token"
+	}
 
 }
