@@ -1,0 +1,6 @@
+{{block "error" .}}
+<div class="min-h-80 flex flex-col justify-center items-center">
+  <h1 class="text-3xl font-semibold text-gray-800">{{.StatusCode}}</h1>
+  <p class="text-lg font-normal text-red-500">{{.Message}}</p>
+</div>
+{{end}}
