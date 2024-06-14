@@ -3,6 +3,7 @@ module github.com/Brassalsa/m-chat
 go 1.22.2
 
 require (
+	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/joho/godotenv v1.5.1
 	go.mongodb.org/mongo-driver v1.15.0
 	golang.org/x/crypto v0.17.0
