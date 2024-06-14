@@ -11,3 +11,8 @@ func NewFormData() *FormData {
 		Errors: make(map[string]string),
 	}
 }
+
+type ErrorData struct {
+	StatusCode int
+	Message    string
+}
