@@ -2,9 +2,11 @@ package api
 
 import (
 	"context"
+	"log"
 	"net/http"
 
 	"github.com/Brassalsa/m-chat/internal/api/handlers"
+	"github.com/Brassalsa/m-chat/internal/api/middlewares"
 	"github.com/Brassalsa/m-chat/internal/db"
 	"github.com/Brassalsa/m-chat/internal/types"
 	"github.com/Brassalsa/m-chat/pkg"
@@ -55,6 +57,14 @@ func HandleV1Route(ctx context.Context, dbC *db.MongoDb) http.Handler {
 	})
 	r.RegisterHandleFunc("POST /log-in", userHandler.Login)
 	r.RegisterHandleFunc("POST /register", userHandler.Regsiter)
+
+	r.RegisterHandleFunc("GET /pro", middlewares.OnlyAuth(ctx, dbC, func(w http.ResponseWriter, r *http.Request) {
+		id := r.Context().Value(types.Id{}).(types.Id)
+		r.Context().Done()
+		log.Println("id ", id)
+
+		pkg.RespondPage(w, 200, layout, "home", "bruh")
+	}))
 
 	return r.RMux
 }
