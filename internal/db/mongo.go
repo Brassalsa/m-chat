@@ -80,7 +80,7 @@ func (db *MongoDb) AddCollection(coll []string) {
 }
 
 // add data to collection
-func (m *MongoDb) InsertTo(coll string, payload interface{}) error {
+func (m *MongoDb) Add(coll string, payload interface{}) error {
 	if c := m.IsCollection(coll); !c {
 		return fmt.Errorf(`"%s" collection doesnot exists`, coll)
 	}
@@ -95,7 +95,7 @@ func (m *MongoDb) InsertTo(coll string, payload interface{}) error {
 }
 
 // delete data from collection
-func (m *MongoDb) DeleteFrom(coll string, filter interface{}) error {
+func (m *MongoDb) Delete(coll string, filter interface{}) error {
 	if c := m.IsCollection(coll); !c {
 		return fmt.Errorf(`"%s" collection doesnot exists`, coll)
 	}
@@ -107,7 +107,7 @@ func (m *MongoDb) DeleteFrom(coll string, filter interface{}) error {
 }
 
 // find data
-func (m *MongoDb) FindOne(coll string, filter interface{}, decodeTo interface{}) error {
+func (m *MongoDb) Get(coll string, filter interface{}, decodeTo interface{}) error {
 
 	if c := m.IsCollection(coll); !c {
 		return fmt.Errorf(`"%s" collection doesnot exists`, coll)
@@ -173,7 +173,7 @@ func (m *MongoDb) Update(coll string, filter interface{}, updateParam interface{
 	}
 	id := new(Id)
 
-	err := m.FindOne(coll, filter, &id)
+	err := m.Get(coll, filter, &id)
 	if err != nil {
 		return err
 	}

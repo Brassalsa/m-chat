@@ -3,11 +3,11 @@ package types
 import (
 	"net/http"
 
-	"github.com/Brassalsa/m-chat/internal/db"
+	"github.com/Brassalsa/m-chat/pkg/persister"
 )
 
 type Handler struct {
 	Rmux *http.ServeMux
-	Db   *db.MongoDb
+	Db   persister.Persister
 	Coll string
 }

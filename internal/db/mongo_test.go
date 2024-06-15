@@ -45,13 +45,13 @@ func TestMongoDb(t *testing.T) {
 	}
 
 	t.Log("Testing put")
-	if err := db.InsertTo("tests", tstD); err != nil {
+	if err := db.Add("tests", tstD); err != nil {
 		t.Error(err)
 	}
 
 	t.Log("Testing get")
 	tstR := new(TestData)
-	err := db.FindOne("tests", tstD, &tstR)
+	err := db.Get("tests", tstD, &tstR)
 	if err != nil {
 		t.Error(err)
 	} else {
@@ -69,10 +69,10 @@ func TestMongoDb(t *testing.T) {
 	}
 
 	t.Log("Testing deletion")
-	if err := db.DeleteFrom("tests", tstD); err != nil {
+	if err := db.Delete("tests", tstD); err != nil {
 		t.Error(err)
 	}
-	if err := db.DeleteFrom("tests", tstU); err != nil {
+	if err := db.Delete("tests", tstU); err != nil {
 		t.Error(err)
 	}
 

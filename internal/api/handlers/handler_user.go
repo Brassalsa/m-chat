@@ -3,6 +3,7 @@ package handlers
 import (
 	"net/http"
 
+	"github.com/Brassalsa/m-chat/internal/db/schema"
 	"github.com/Brassalsa/m-chat/internal/types"
 	"github.com/Brassalsa/m-chat/pkg"
 	"github.com/Brassalsa/m-chat/pkg/helpers"
@@ -29,8 +30,8 @@ func (u *UserHandler) Login(w http.ResponseWriter, r *http.Request) {
 		pkg.RespondTempl(w, resCode, "log-in", formData)
 	}()
 
-	user := types.User{}
-	err := u.Db.FindOne(u.Coll, types.Email{
+	user := schema.User{}
+	err := u.Db.Get(u.Coll, types.Email{
 		Email: email,
 	}, &user)
 
@@ -100,12 +101,10 @@ func (u *UserHandler) Regsiter(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user := types.User{}
+	user := schema.User{}
 
-	if err := u.Db.FindOne(u.Coll,
-		u.Db.Or(
-			types.Username{Username: username},
-			types.Email{Email: email}),
+	if err := u.Db.Get(u.Coll,
+		types.Username{Username: username},
 		&user,
 	); err != nil {
 		formData.Errors["form"] = err.Error()
@@ -124,7 +123,7 @@ func (u *UserHandler) Regsiter(w http.ResponseWriter, r *http.Request) {
 
 	pkg.HashString(&password)
 
-	if err := u.Db.InsertTo(u.Coll, RegisterUser{
+	if err := u.Db.Add(u.Coll, RegisterUser{
 		Username: username,
 		Email:    email,
 		Name:     name,
@@ -135,7 +134,7 @@ func (u *UserHandler) Regsiter(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// find inserted user
-	if err := u.Db.FindOne(u.Coll, types.Email{
+	if err := u.Db.Get(u.Coll, types.Email{
 		Email: email,
 	}, &user); err != nil {
 		formData.Errors["form"] = err.Error()
