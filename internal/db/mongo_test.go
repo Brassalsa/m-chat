@@ -64,6 +64,7 @@ func TestMongoDb(t *testing.T) {
 	tstU := TestData{
 		Name: "test 2",
 	}
+
 	if err := db.Update("tests", tstD, tstU); err != nil {
 		t.Error(err)
 	}

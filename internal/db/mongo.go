@@ -94,6 +94,17 @@ func (m *MongoDb) Add(coll string, payload interface{}) error {
 	return err
 }
 
+// add data to collection
+func (m *MongoDb) AddMany(coll string, payload []interface{}) error {
+	if c := m.IsCollection(coll); !c {
+		return fmt.Errorf(`"%s" collection doesnot exists`, coll)
+	}
+
+	mColl := m.database.Collection(coll)
+	_, err := mColl.InsertMany(m.Ctx, payload)
+	return err
+}
+
 // delete data from collection
 func (m *MongoDb) Delete(coll string, filter interface{}) error {
 	if c := m.IsCollection(coll); !c {
@@ -101,7 +112,6 @@ func (m *MongoDb) Delete(coll string, filter interface{}) error {
 	}
 
 	mColl := m.database.Collection(coll)
-
 	_, err := mColl.DeleteOne(m.Ctx, filter)
 	return err
 }
@@ -131,7 +141,7 @@ func (m *MongoDb) Get(coll string, filter interface{}, decodeTo interface{}) err
 	return nil
 }
 
-func (m *MongoDb) FindMany(coll string, filter interface{}, results interface{}) error {
+func (m *MongoDb) GetMany(coll string, filter interface{}, results interface{}) error {
 
 	if c := m.IsCollection(coll); !c {
 		return fmt.Errorf(`"%s" collection doesnot exists`, coll)
@@ -168,33 +178,22 @@ func (m *MongoDb) Update(coll string, filter interface{}, updateParam interface{
 		return fmt.Errorf(`"%s" collection doesnot exists`, coll)
 	}
 
-	type Id struct {
-		Id primitive.ObjectID `bson:"_id"`
-	}
-	id := new(Id)
-
-	err := m.Get(coll, filter, &id)
-	if err != nil {
-		return err
-	}
-
 	uDoc, err := toDoc(updateParam)
 	if err != nil {
 		return err
 	}
 
 	mColl := m.database.Collection(coll)
-	uRes, err := mColl.UpdateByID(m.Ctx, id.Id, bson.D{{
+	uRes := mColl.FindOneAndUpdate(m.Ctx, filter, bson.D{{
 		Key:   "$set",
 		Value: uDoc,
 	}})
 
-	if err != nil {
+	if err := uRes.Err(); err != nil {
+		if err == mongo.ErrNoDocuments {
+			return errors.New(NOT_FOUND)
+		}
 		return err
-	}
-
-	if uRes.UpsertedID != nil {
-		return errors.New("updateion failed")
 	}
 	return nil
 }
