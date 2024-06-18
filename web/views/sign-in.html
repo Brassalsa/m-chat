@@ -10,7 +10,12 @@
   </div>
 </div>
 {{end}} {{block "log-in" .}}
-<form class="grid gap-3" hx-post="/log-in" hx-target="#sign-in">
+<form
+  class="grid gap-3"
+  hx-post="/log-in"
+  hx-target="#sign-in"
+  hx-indicator="#loading, .submit-btn"
+>
   <label for="email">Email</label>
   <input
     id="email"
@@ -44,14 +49,22 @@
   <p class="text-red-500 capitalize">
     {{if .Errors.form}} {{.Errors.form}} {{end}}
   </p>
-  <button>Login</button>
+  <button class="flex justify-center items-center gap-2 submit-btn">
+    <span>Log in</span>
+    <span id="loading" class="htmx-indicator"> {{template "spinner" .}} </span>
+  </button>
 
   <a href="/sign-in?register=1" hx-target="body" class="mx-auto"
     >Register here</a
   >
 </form>
 {{end}} {{block "register" .}}
-<form class="grid gap-3" hx-post="/register" hx-target="#sign-in">
+<form
+  class="grid gap-3"
+  hx-post="/register"
+  hx-target="#sign-in"
+  hx-indicator="#loading, .submit-btn"
+>
   <label for="name">Name</label>
   <input
     id="name"
@@ -129,7 +142,10 @@
   <p class="text-red-500 capitalize">
     {{if .Errors.form}} {{.Errors.form}} {{end}}
   </p>
-  <button>Register</button>
+  <button class="submit-btn flex gap-2 justify-center items-center">
+    <span>Register</span>
+    <span id="loading" class="htmx-indicator"> {{template "spinner" .}} </span>
+  </button>
   <a hx-target="body" href="/sign-in?register=0" class="mx-auto">Login here</a>
 </form>
 {{end}}

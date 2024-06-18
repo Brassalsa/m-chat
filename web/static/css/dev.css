@@ -15,11 +15,25 @@
     @apply px-2 py-1 border rounded-md bg-blue-500 text-white hover:bg-blue-400 transition;
   }
 
+  button.htmx-request {
+    background-color: brown !;
+  }
+
   a {
     @apply text-blue-500 hover:underline hover:text-blue-400 transition hover:cursor-pointer;
   }
 
   .card {
     @apply bg-slate-50 px-6 py-4 rounded-md;
+  }
+
+  .htmx-indicator {
+    @apply opacity-0 transition-opacity duration-500 hidden;
+  }
+  .htmx-request.htmx-indicator {
+    @apply opacity-100 inline;
+  }
+  .htmx-request.submit-btn {
+    @apply opacity-50 pointer-events-none;
   }
 }
