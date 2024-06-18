@@ -3,6 +3,7 @@ package pkg
 import (
 	"html/template"
 	"io"
+	"strings"
 )
 
 type Templates struct {
@@ -16,8 +17,13 @@ type LayoutPage struct {
 func NewTemplate() *Templates {
 	templ, err := template.ParseGlob("*web/views/*.html")
 	if err != nil {
-		templ, err = template.ParseGlob("../web/views/*.html")
-		if err != nil {
+		if strings.Contains(err.Error(), "pattern matches no files") {
+			templ, err = template.ParseGlob("../web/views/*.html")
+			if err != nil {
+				panic(err)
+			}
+
+		} else {
 			panic(err)
 		}
 	}
