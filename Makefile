@@ -1,4 +1,4 @@
-build:
+build:css-build
 	go build -o bin/m-chat ./cmd/main.go
 
 run:build
