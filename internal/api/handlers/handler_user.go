@@ -19,7 +19,6 @@ type LoginUser struct {
 }
 
 func (u *UserHandler) Login(w http.ResponseWriter, r *http.Request) {
-
 	formData := res.NewFormData()
 	email := r.FormValue("email")
 	password := r.FormValue("password")
@@ -27,6 +26,10 @@ func (u *UserHandler) Login(w http.ResponseWriter, r *http.Request) {
 	formData.Values["password"] = password
 	resCode := 200
 	defer func() {
+		if resCode >= 300 {
+			u.Redirect(w, r, "/home")
+			return
+		}
 		pkg.RespondTempl(w, resCode, "log-in", formData)
 	}()
 
@@ -37,17 +40,20 @@ func (u *UserHandler) Login(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		formData.Errors["form"] = err.Error()
+		resCode = 422
 		return
 	}
 
 	if user.Email == "" {
 		formData.Errors["email"] = "email not found"
+		resCode = 422
 		return
 	}
 
 	// check password
 	if !pkg.CompareHash(user.Password, password) {
 		formData.Errors["password"] = "wrong password"
+		resCode = 422
 		return
 	}
 
@@ -56,8 +62,10 @@ func (u *UserHandler) Login(w http.ResponseWriter, r *http.Request) {
 			Id: user.Id,
 		}); err != nil {
 		formData.Errors["form"] = "error generating token"
+		resCode = 422
 	}
 
+	resCode = 300
 }
 
 type RegisterUser struct {
@@ -88,6 +96,10 @@ func (u *UserHandler) Regsiter(w http.ResponseWriter, r *http.Request) {
 	resCode := 200
 
 	defer func() {
+		if resCode >= 300 {
+			u.Redirect(w, r, "/home")
+			return
+		}
 		pkg.RespondTempl(w, resCode, "register", formData)
 	}()
 
@@ -148,4 +160,5 @@ func (u *UserHandler) Regsiter(w http.ResponseWriter, r *http.Request) {
 		formData.Errors["form"] = "error generating token"
 	}
 
+	resCode = 300
 }

@@ -41,11 +41,12 @@ func HandleV1Route(ctx context.Context, dbC *db.MongoDb) http.Handler {
 		pkg.RespondPage(w, 200, layout, "sign-in", formData)
 	})
 
-	userHandler := handlers.UserHandler{
+	userH := handlers.UserHandler{
 		Handler: types.Handler{
 			Rmux: r.RMux,
 			Db:   dbC,
 			Coll: "users",
+			Ctx:  ctx,
 		},
 	}
 
@@ -55,10 +56,19 @@ func HandleV1Route(ctx context.Context, dbC *db.MongoDb) http.Handler {
 	r.RegisterHandleFunc("GET /register", func(w http.ResponseWriter, r *http.Request) {
 		pkg.RespondTempl(w, 200, "register", res.NewFormData())
 	})
-	r.RegisterHandleFunc("POST /log-in", userHandler.Login)
-	r.RegisterHandleFunc("POST /register", userHandler.Regsiter)
+	r.RegisterHandleFunc("POST /log-in", userH.Login)
+	r.RegisterHandleFunc("POST /register", userH.Regsiter)
 
-	r.RegisterHandleFunc("GET /pro", middlewares.OnlyAuth(ctx, dbC, func(w http.ResponseWriter, r *http.Request) {
+	authH := middlewares.AuthHandler{
+		Handler: types.Handler{
+			Rmux: r.RMux,
+			Db:   dbC,
+			Coll: "users",
+			Ctx:  ctx,
+		},
+	}
+
+	r.RegisterHandleFunc("GET /home", authH.OnlyAuth(func(w http.ResponseWriter, r *http.Request) {
 		id := r.Context().Value(types.Id{}).(types.Id)
 		r.Context().Done()
 		log.Println("id ", id)

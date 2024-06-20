@@ -5,15 +5,18 @@ import (
 	"net/http"
 
 	"github.com/Brassalsa/m-chat/internal/db"
+	"github.com/Brassalsa/m-chat/internal/db/schema"
 	"github.com/Brassalsa/m-chat/internal/types"
 	"github.com/Brassalsa/m-chat/pkg"
 	"github.com/Brassalsa/m-chat/pkg/helpers"
 	"github.com/Brassalsa/m-chat/pkg/res"
 )
 
-type Handler func(w http.ResponseWriter, r *http.Request)
+type AuthHandler struct {
+	types.Handler
+}
 
-func OnlyAuth(c context.Context, db *db.MongoDb, fn Handler) Handler {
+func (h *AuthHandler) OnlyAuth(fn types.HandleFunc) types.HandleFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
 		id := types.Id{}
@@ -26,8 +29,25 @@ func OnlyAuth(c context.Context, db *db.MongoDb, fn Handler) Handler {
 		}
 
 		// check user in db
+		user := schema.User{}
+		if err := h.Db.Get("users", types.Id{
+			Id: id.Id,
+		}, &user); err != nil {
+			if err.Error() == db.NOT_FOUND {
+				pkg.RespondPage(w, 200, "layout", "error", res.ErrorData{
+					StatusCode: 404,
+					Message:    "User not found",
+				})
+				return
+			}
+			pkg.RespondPage(w, 200, "layout", "error", res.ErrorData{
+				StatusCode: 401,
+				Message:    "Unauthorized please login to continue",
+			})
+			return
+		}
 
-		newR := r.WithContext(context.WithValue(c, types.Id{}, id))
+		newR := r.WithContext(context.WithValue(h.Ctx, types.Id{}, id))
 		fn(w, newR)
 	}
 }
