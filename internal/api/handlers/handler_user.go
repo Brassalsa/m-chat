@@ -19,14 +19,16 @@ type LoginUser struct {
 }
 
 func (u *UserHandler) Login(w http.ResponseWriter, r *http.Request) {
+	var resCode = http.StatusOK
+
 	formData := res.NewFormData()
 	email := r.FormValue("email")
 	password := r.FormValue("password")
 	formData.Values["email"] = email
 	formData.Values["password"] = password
-	resCode := 200
+
 	defer func() {
-		if resCode >= 300 {
+		if resCode == http.StatusFound {
 			u.Redirect(w, r, "/home")
 			return
 		}
@@ -40,20 +42,20 @@ func (u *UserHandler) Login(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		formData.Errors["form"] = err.Error()
-		resCode = 422
+		resCode = http.StatusUnprocessableEntity
 		return
 	}
 
 	if user.Email == "" {
 		formData.Errors["email"] = "email not found"
-		resCode = 422
+		resCode = http.StatusUnprocessableEntity
 		return
 	}
 
 	// check password
 	if !pkg.CompareHash(user.Password, password) {
 		formData.Errors["password"] = "wrong password"
-		resCode = 422
+		resCode = http.StatusUnprocessableEntity
 		return
 	}
 
@@ -62,10 +64,11 @@ func (u *UserHandler) Login(w http.ResponseWriter, r *http.Request) {
 			Id: user.Id,
 		}); err != nil {
 		formData.Errors["form"] = "error generating token"
-		resCode = 422
+		resCode = http.StatusUnprocessableEntity
+		return
 	}
 
-	resCode = 300
+	resCode = http.StatusFound
 }
 
 type RegisterUser struct {
@@ -76,6 +79,8 @@ type RegisterUser struct {
 }
 
 func (u *UserHandler) Regsiter(w http.ResponseWriter, r *http.Request) {
+	var resCode = http.StatusFound
+
 	formData := res.NewFormData()
 
 	username := r.FormValue("username")
@@ -93,10 +98,8 @@ func (u *UserHandler) Regsiter(w http.ResponseWriter, r *http.Request) {
 	confirmPassword := r.FormValue("confirm_password")
 	formData.Values["confirm_password"] = confirmPassword
 
-	resCode := 200
-
 	defer func() {
-		if resCode >= 300 {
+		if resCode == http.StatusFound {
 			u.Redirect(w, r, "/home")
 			return
 		}
@@ -105,11 +108,13 @@ func (u *UserHandler) Regsiter(w http.ResponseWriter, r *http.Request) {
 
 	if helpers.CheckEmpty([]string{username, email, password}) {
 		formData.Errors["form"] = "username, email and password are required"
+		resCode = http.StatusUnprocessableEntity
 		return
 	}
 
 	if password != confirmPassword {
 		formData.Errors["confirm_password"] = "passwords don't match"
+		resCode = http.StatusUnprocessableEntity
 		return
 	}
 
@@ -120,20 +125,27 @@ func (u *UserHandler) Regsiter(w http.ResponseWriter, r *http.Request) {
 		&user,
 	); err != nil {
 		formData.Errors["form"] = err.Error()
+		resCode = http.StatusUnprocessableEntity
 		return
 	}
 
 	if user.Username != "" && user.Username == username {
 		formData.Errors["username"] = "username already taken"
+		resCode = http.StatusUnprocessableEntity
 		return
 	}
 
 	if user.Email != "" && user.Email == email {
 		formData.Errors["email"] = "email already exists"
+		resCode = http.StatusUnprocessableEntity
 		return
 	}
 
-	pkg.HashString(&password)
+	if err := pkg.HashString(&password); err != nil {
+		formData.Errors["form"] = "error hashing password"
+		resCode = http.StatusUnprocessableEntity
+		return
+	}
 
 	if err := u.Db.Add(u.Coll, RegisterUser{
 		Username: username,
@@ -142,6 +154,7 @@ func (u *UserHandler) Regsiter(w http.ResponseWriter, r *http.Request) {
 		Password: password,
 	}); err != nil {
 		formData.Errors["form"] = err.Error()
+		resCode = http.StatusUnprocessableEntity
 		return
 	}
 
@@ -150,6 +163,7 @@ func (u *UserHandler) Regsiter(w http.ResponseWriter, r *http.Request) {
 		Email: email,
 	}, &user); err != nil {
 		formData.Errors["form"] = err.Error()
+		resCode = http.StatusUnprocessableEntity
 		return
 	}
 
@@ -158,7 +172,9 @@ func (u *UserHandler) Regsiter(w http.ResponseWriter, r *http.Request) {
 			Id: user.Id,
 		}); err != nil {
 		formData.Errors["form"] = "error generating token"
+		resCode = http.StatusUnprocessableEntity
+		return
 	}
 
-	resCode = 300
+	resCode = http.StatusFound
 }
